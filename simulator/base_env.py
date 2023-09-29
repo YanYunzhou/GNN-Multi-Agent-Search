@@ -161,7 +161,7 @@ class BaseEnv(ABC):
         self.min_edge_weight = np.min(list_edge_cost)
 
     def sample_graphs(self):
-        points = self.sample_n_points(self.n_nodes, no_overlap=False)
+        points = self.sample_n_points(self.n_nodes, no_overlap=True)
         edge_cost, neighbors, edge_index, _, _ = self.construct_graph(self, points, only_free_neighbor=True)
         
         self.graph = DotDict({'points': points,
@@ -210,6 +210,7 @@ class BaseEnv(ABC):
 
     def sample_n_points(self, n, no_overlap=False, need_negative=False):
         # TODO: distance to the existing nodes should be over a threshold
+        minimum_dist=0.025
         if need_negative:
             negative = []
         samples = []
@@ -220,7 +221,7 @@ class BaseEnv(ABC):
             else:
                 candidates = list(self.uniform_sample(n=n))
                 sample = candidates.pop().reshape(-1)
-            if self._point_in_free_space(sample) and ((not no_overlap) or len(samples) == 0 or cdist([sample], samples).min() > (2*self.RAD_DEFAULT)):
+            if self._point_in_free_space(sample) and ((not no_overlap) or len(samples) == 0 or cdist([sample], samples).min() > (minimum_dist)):
                 samples.append(sample)
             elif need_negative:
                 negative.append(sample)
@@ -565,6 +566,8 @@ class BaseEnv(ABC):
         if not self._valid_state(state):
             return False
         point = Point(*state.reshape(-1)).buffer(self.RAD_DEFAULT)
+        #if self.occupied_area_prep.intersects(point)==True:
+            #print(self.occupied_area_prep.intersects(point))
         # point = Point(*state).buffer(self.RAD_DEFAULT)
         # print(state, self.occupied_area_prep.intersects(point))
         # breakpoint()
@@ -581,7 +584,6 @@ class BaseEnv(ABC):
             return False
         if not self._state_fp(state) or not self._state_fp(new_state):
             return False
-
         return not self.occupied_area_prep.intersects(LineString([Point(*state.reshape(-1)), Point(*new_state.reshape(-1))]).buffer(self.RAD_DEFAULT))
 
     def collide_static_agents(self,

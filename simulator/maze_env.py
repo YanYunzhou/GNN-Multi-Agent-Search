@@ -4,7 +4,6 @@ import seaborn as sns
 import numpy as np
 import torch
 import torchvision
-
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from pathlib import Path
@@ -17,6 +16,7 @@ from shapely.prepared import prep
 from matplotlib.collections import LineCollection
 
 import shapely
+import shapely.affinity
 from shapely.geometry import MultiPolygon, Polygon, LineString, Point
 from shapely.ops import unary_union
 
@@ -33,7 +33,7 @@ LIMITS = np.array([1., 1., 8.*RRT_EPS])
 
 # MIN_THRESHOLD: to check whether agent reach goal
 # MIN_THRESHOLD = 4.1e-2 #0.01#
-RAD_DEFAULT = 2e-2
+RAD_DEFAULT = 1e-2
 
 
 def get_box_polygon(pos, angle, dim):
@@ -68,7 +68,7 @@ class MazeEnv(BaseEnv):
         dir_data_save = Path(config.data_root)/f'{config.env_name}'/"MazeEnvSource"
         self.data_path_source = return_dir_datasource(config)
 
-        name_dataset_save = str(dir_data_save/'mazes_15_2_3000.npz')
+        name_dataset_save = "C:\MS\Research\SLAM_Optimization\GNN_MAPF_yyz\dataset\MazeEnv\MazeEnvSource\mazes_15_2_3000.npz"
         with np.load(name_dataset_save) as f:
             self.maps = f['maps']
             self.init_states = f['init_states']
@@ -91,8 +91,8 @@ class MazeEnv(BaseEnv):
         self.occupied_area_prep = prep(self.occupied_area)
         # print(f'{self.config.env_name}:{self.occupied_area}')
 
-        self.MIN_THRESHOLD = 4.1e-2  # 0.01#
-        self.RAD_DEFAULT = 2e-2
+        self.MIN_THRESHOLD = 2.1e-2  # 0.01#
+        self.RAD_DEFAULT =1e-2
         self.xmin, self.ymin, self.xmax, self.ymax = self.occupied_area.bounds
 
     def get_problem(self):

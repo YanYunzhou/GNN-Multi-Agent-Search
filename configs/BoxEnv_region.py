@@ -9,9 +9,9 @@ config_base = {
 
   'k': 6,
   'env_dim': 2,
-  "n_nodes": 1000,
+  "n_nodes": 800,
   "dim": 2,
-  'num_agents': 5,
+  'num_agents': 100,
 
   "ID_Env_Start": 0,
   "ID_Env_End": 20,
