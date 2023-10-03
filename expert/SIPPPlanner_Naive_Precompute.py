@@ -43,7 +43,7 @@ def update_edge_interval_from_edges(points, current_node,parent_node, current_ti
             delay=new_delay
             minimum_valid_time=np.linalg.norm(points[edge[0]]-points[edge[1]])
             valid_time = [-minimum_valid_time-0.02, next_time - current_time+0.02]
-            if (collision_time[0]>=-0.02 and collision_time[0]<=valid_time[1]) or (collision_time[1]>=-0.02 and collision_time[1]<=valid_time[1]) or  (min(collision_time)<=0 and max(collision_time)>=valid_time[1]-0.02):
+            if (collision_time[0]>=-0.02 and collision_time[0]<=valid_time[1]) or (collision_time[1]>=-0.02 and collision_time[1]<=valid_time[1]) or  (min(collision_time)<=valid_time[1]-0.02 and max(collision_time)>=valid_time[1]-0.02) or (min(collision_time)<=-0.02 and max(collision_time)>=-0.02):
                 collision_start=max(valid_time[0],delay[0])
                 collision_end=min(valid_time[1],delay[1])
                 #if current_node not in edge and parent_node not in edge:
@@ -2038,6 +2038,11 @@ def SIPP_PP(env, starts, goals, edges_conflicts_dict,nodes_edges_conflicts_dict,
         for conflict in edges_conflicts_dict[edge_pair[0]]:
             another_edge=conflict[0]
             if edge_pair[1][0]==another_edge[0] and edge_pair[1][1]==another_edge[1]:
+                print(conflict)
+        print(edge_pair[0])
+        for conflict in edges_conflicts_dict[edge_pair[1]]:
+            another_edge = conflict[0]
+            if edge_pair[0][0] == another_edge[0] and edge_pair[0][1] == another_edge[1]:
                 print(conflict)
     return path_dict,agents_time_list
 
