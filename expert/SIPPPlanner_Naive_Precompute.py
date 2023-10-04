@@ -366,6 +366,7 @@ def update_nodes_intervals_from_edges(points, current_node, parent_node, current
     current_start_pos = points[parent_node]
     current_end_pos = points[current_node]
     dst_threshold = 0.0211
+    R=0.02
     eps = 0
     index = -1
     nodes_conflicts_list=edges_nodes_conflicts_dict[(parent_node,current_node)]
@@ -385,6 +386,9 @@ def update_nodes_intervals_from_edges(points, current_node, parent_node, current
             time2=t2*(next_time-current_time)+current_time
             insert_current_time = min(time1, time2)
             insert_next_time = max(time1, time2)
+            if insert_next_time-insert_current_time>R:
+                insert_current_time=insert_current_time+0.01
+                insert_next_time=insert_next_time-0.01
             i=node_num
             interval_num = len(node_interval[i])
             index = i
