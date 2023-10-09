@@ -48,6 +48,10 @@ def raytrace(A, B):
     while (x,y) != grid_B:
         # NB if tIx == tIy we increment both x and y
         (movx, movy) = (tIx <= tIy, tIy <= tIx)
+        if movx==False and movy==True:
+            traversed.append((x+sx, y))
+        if movy==False and movx==True:
+            traversed.append((x, y+sy))
         if movx:
             # intersection is at (x + sx, yA + tIx / dx^2)
             x += sx
@@ -146,17 +150,28 @@ def updates_cellis_list_nodes(node_pos1,node_pos2,cell_width_num,minimum_w,minim
     all_insert_index=[]
     all_nodes_pos.append(node_pos1)
     all_nodes_pos.append(node_pos2)
-    factor=15
+    factor=500
     R = 0.02/factor
     segment_len=int(np.linalg.norm(node_pos2-node_pos1)/0.02*factor)
     cells=raytrace(((node_pos1[0]-minimum_w)/minimum_interval,(node_pos1[1]-minimum_w)/minimum_interval),((node_pos2[0]-minimum_w)/minimum_interval,(node_pos2[1]-minimum_w)/minimum_interval))
     check_index_list=[]
     for cell in cells:
         cell_index = cell_width_num * cell[0] + cell[1]
-        if cell_index not in check_index_list:
-            check_index_list.append(cell_index)
+        if cell_index not in all_insert_index:
+            all_insert_index.append(cell_index)
+    #for i in range(segment_len-1):
+        #all_nodes_pos.append(node_pos1+(i+1)/segment_len*(node_pos2-node_pos1))
+    #for node_pos in all_nodes_pos:
+        #index1=int((node_pos[0]-minimum_w)/minimum_interval)
+        #index2 = int((node_pos[1] - minimum_w) / minimum_interval)
+        #cell_index=cell_width_num*index1+index2
+        #if cell_index not in check_index_list:
+            #check_index_list.append(cell_index)
+    #if len(all_insert_index)!=len(check_index_list):
+        #print(all_insert_index)
+        #print(check_index_list)
 
-    return check_index_list
+    return all_insert_index
 def get_all_neighborhoods_edges_for_intersections(node_pos1,node_pos2,cell_width_num,minimum_w,minimum_interval,cells_list_nodes):
     all_nodes_pos = []
     all_insert_index = []

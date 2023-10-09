@@ -1279,7 +1279,6 @@ def SIPP_PP(env, starts, goals, edges_conflicts_dict,nodes_edges_conflicts_dict,
     for x in range(1, np.shape(priority_index)[0]):
         print(x)
         find_dst_flag=False
-        iteration_start = time.time()
         find_flag=False
         node_expand_num = 0
         # start_time = time.time()
@@ -1598,10 +1597,6 @@ def SIPP_PP(env, starts, goals, edges_conflicts_dict,nodes_edges_conflicts_dict,
         else:
             print("cannot find a valid path!")
             infeasible_agents_list.append(priority_index[x])
-            #print(nodes_safe_intervals[current_end])
-            #for edge in edge_dict:
-                #if edge[0]==current_end or edge[1]==current_end:
-                    ##print(edge_dict[edge])
 
         #print(node_expand_num)
         #print(iteration_end - iteration_start)
@@ -2039,15 +2034,35 @@ def SIPP_PP(env, starts, goals, edges_conflicts_dict,nodes_edges_conflicts_dict,
     for edge_pair in collision_edges:
         #print(edges_conflicts_dict[edge_pair[0]])
         print(edge_pair[1])
+        flag=False
+        if edge_pair[0][0]==edge_pair[0][1] or edge_pair[1][0]==edge_pair[1][1]:
+            continue
         for conflict in edges_conflicts_dict[edge_pair[0]]:
             another_edge=conflict[0]
             if edge_pair[1][0]==another_edge[0] and edge_pair[1][1]==another_edge[1]:
+                flag=True
                 print(conflict)
         print(edge_pair[0])
         for conflict in edges_conflicts_dict[edge_pair[1]]:
             another_edge = conflict[0]
             if edge_pair[0][0] == another_edge[0] and edge_pair[0][1] == another_edge[1]:
+                flag=True
                 print(conflict)
+        if flag==False:
+            minimum_w=-1
+            minimum_interval=0.02
+            node_pos1=points[edge_pair[0][0]]
+            node_pos2=points[edge_pair[0][1]]
+            cells_list1 = raytrace(
+                ((node_pos1[0] - minimum_w) / minimum_interval, (node_pos1[1] - minimum_w) / minimum_interval),
+                ((node_pos2[0] - minimum_w) / minimum_interval, (node_pos2[1] - minimum_w) / minimum_interval))
+            node_pos1 = points[edge_pair[1][0]]
+            node_pos2 = points[edge_pair[1][1]]
+            cells_list2 = raytrace(
+                ((node_pos1[0] - minimum_w) / minimum_interval, (node_pos1[1] - minimum_w) / minimum_interval),
+                ((node_pos2[0] - minimum_w) / minimum_interval, (node_pos2[1] - minimum_w) / minimum_interval))
+            print(cells_list1)
+            print(cells_list2)
     return path_dict,agents_time_list
 
 if __name__ == '__main__':

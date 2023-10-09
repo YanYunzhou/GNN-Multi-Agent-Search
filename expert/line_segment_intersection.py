@@ -17,6 +17,39 @@ from SIPPPlanner_Naive_Precompute import *
 from poly_point_isect import *
 from fixed_radius_near_neighbors import *
 minimum_checking_time=0
+
+def orientation(p, q, r):
+    val = (q[1] - p[1]) * (r[0] - q[0]) - (q[0] - p[0]) * (r[1] - q[1])
+    if val == 0:
+        return 0  # Collinear
+    return 1 if val > 0 else 2  # Clockwise or Counterclockwise
+
+def on_segment(p, q, r):
+    return (q[0] <= max(p[0], r[0]) and q[0] >= min(p[0], r[0]) and
+            q[1] <= max(p[1], r[1]) and q[1] >= min(p[1], r[1]))
+
+def do_intersect(p1, q1, p2, q2):
+    o1 = orientation(p1, q1, p2)
+    o2 = orientation(p1, q1, q2)
+    o3 = orientation(p2, q2, p1)
+    o4 = orientation(p2, q2, q1)
+
+    if o1 != o2 and o3 != o4:
+        return True
+
+    if o1 == 0 and on_segment(p1, p2, q1):
+        return True
+
+    if o2 == 0 and on_segment(p1, q2, q1):
+        return True
+
+    if o3 == 0 and on_segment(p2, p1, q2):
+        return True
+
+    if o4 == 0 and on_segment(p2, q1, q2):
+        return True
+
+    return False
 def compute_edgesToedges_conflicts(edges, points,check_edges_pairs,edges_collision_dict):
     dst_threshold = 0.0212
     eps = 0
@@ -37,7 +70,7 @@ def compute_edgesToedges_conflicts(edges, points,check_edges_pairs,edges_collisi
         check_end_pos = points[check_current_node]
         minimum_dist = distance_between_segments(current_start_pos, current_end_pos, check_start_pos,
                                                  check_end_pos)
-        if minimum_dist<=dst_threshold:
+        if minimum_dist<=dst_threshold or (do_intersect(current_start_pos,current_end_pos,check_start_pos,check_end_pos)==True and (current_node!=check_current_node or parent_node!=check_current_node)):
             # case 1
             V2 = check_end_pos - check_start_pos
             V2 = V2 / np.linalg.norm(V2)
@@ -393,20 +426,21 @@ def precompute_conflicts(env):
             edges_pos_dict[(tuple(point2_list), tuple(point1_list))] = edge_count
             edge_count = edge_count + 1
     edges_data=tuple(edges_data)
-    intersection=[]
+    #intersection=[]
     #intersection = isect_segments_include_segments(edges_data, validate=True)
-    print(len(intersection))
+    #print(len(intersection))
     check_edges_pair=[]
     #print(edges_pos_dict)
     for i in range(edge_count):
         current_edge=edges[i]
         edges_nodes_conflicts_dict[current_edge]=[]
         edges_nodes_conflicts_dict[(current_edge[1],current_edge[0])]=[]
-    for i in range(len(intersection)):
-        current_intersection=intersection[i]
-        check_edges_pair.append((edges_pos_dict[current_intersection[1][0]],edges_pos_dict[current_intersection[1][1]]))
+    #for i in range(len(intersection)):
+        #current_intersection=intersection[i]
+        #check_edges_pair.append((edges_pos_dict[current_intersection[1][0]],edges_pos_dict[current_intersection[1][1]]))
     check_edges_pair_copy=copy.deepcopy(check_edges_pair)
     select_edges_pair_part1,nodes_edges_pairs,edges_to_edges_dict=fixed_radius_near_neighborhoods_edges(env)
+    start_time=time.time()
     for pair in nodes_edges_pairs:
         node=pair[0]
         edge_num=pair[1]
@@ -424,6 +458,10 @@ def precompute_conflicts(env):
     for i in range(len(select_edges_pair_part1)):
         if select_edges_pair_part1[i] not in check_edges_pair_copy and (select_edges_pair_part1[i][1],select_edges_pair_part1[i][0]) not in check_edges_pair_copy:
             check_edges_pair.append(select_edges_pair_part1[i])
+    end_time=time.time()
+    print("phase 6")
+    print(end_time-start_time)
+    start_time = time.time()
     check_edges_list_part2=[]
     for i in range(edge_count):
         edge_start=edges[i][0]
@@ -435,6 +473,9 @@ def precompute_conflicts(env):
                 check_edges_list_part2.append((i,edges_set[j]))
     for i in range(len(check_edges_list_part2)):
         check_edges_pair.append(check_edges_list_part2[i])
+    end_time = time.time()
+    print("phase 7")
+    print(end_time - start_time)
     #start_time=time.time()
     #for edge_pair in check_edges_pair:
         #edge1=edge_pair[0]
@@ -445,7 +486,11 @@ def precompute_conflicts(env):
         #print("point2")
         #print(points[edges[edge2][0]])
         #print(points[edges[edge2][1]])
+    start_time = time.time()
     edges_conflicts_dict=compute_edgesToedges_conflicts(edges,points,check_edges_pair,edges_collision_dict)
+    end_time = time.time()
+    print("phase 8")
+    print(end_time - start_time)
     #end_time=time.time()
     return edges_conflicts_dict,nodes_edges_conflicts_dict,edges_nodes_conflicts_dict,edges_dict
 
