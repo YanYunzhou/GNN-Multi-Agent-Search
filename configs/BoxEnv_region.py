@@ -11,7 +11,7 @@ config_base = {
   'env_dim': 2,
   "n_nodes": 800,
   "dim": 2,
-  'num_agents': 120,
+  'num_agents': 100,
 
   "ID_Env_Start": 0,
   "ID_Env_End": 20,
