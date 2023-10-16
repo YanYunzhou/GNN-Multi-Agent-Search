@@ -34,6 +34,12 @@ def update_edge_interval_from_edges(points, current_node,parent_node, current_ti
             edge=conflicts[0]
             collision_time=conflicts[1]
             delay=conflicts[2]
+            a=conflicts[3][0]
+            b = conflicts[3][1]
+            c = conflicts[3][2]
+            d = conflicts[3][3]
+            e = conflicts[3][4]
+            f = conflicts[3][5]
             #if edge[0]==current_node:
                 #edge1=current_end_pos-current_start_pos
                 #edge1=edge1/np.linalg.norm(edge1)
@@ -47,6 +53,21 @@ def update_edge_interval_from_edges(points, current_node,parent_node, current_ti
             delay=new_delay
             minimum_valid_time=np.linalg.norm(points[edge[0]]-points[edge[1]])
             valid_time = [-minimum_valid_time-0.02, next_time - current_time+0.02]
+            minimum_collision_time = -0.02
+            maximum_collision_time = next_time - current_time + 0.02
+            #print(delay)
+            #print(collision_time)
+            #mid_t=(collision_time[0]+collision_time[1])/2
+            mid_t=collision_time[0]
+            if minimum_collision_time>collision_time[0] and minimum_collision_time<collision_time[1]:
+                mid_t=minimum_collision_time
+                delay[0]=max(delay[0],(-math.sqrt((b * mid_t + e) * (b * mid_t + e) - 4 * c * (a * mid_t * mid_t + d * mid_t + f))+b*mid_t+e)/(2*c))
+            if maximum_collision_time>collision_time[0] and maximum_collision_time<collision_time[1]:
+                mid_t=maximum_collision_time
+                delay[1]=min(delay[1],(math.sqrt((b * mid_t + e) * (b * mid_t + e) - 4 * c * (a * mid_t * mid_t + d * mid_t + f))+b*mid_t+e)/(2*c))
+            if delay[0]>delay[1]:
+                return edge_dict
+
             if (collision_time[0]>=-0.02 and collision_time[0]<=valid_time[1]) or (collision_time[1]>=-0.02 and collision_time[1]<=valid_time[1]) or  (min(collision_time)<=valid_time[1]-0.02 and max(collision_time)>=valid_time[1]-0.02) or (min(collision_time)<=-0.02 and max(collision_time)>=-0.02) or current_time==0:
                 collision_start=max(valid_time[0],delay[0])
                 collision_end=min(valid_time[1],delay[1])
@@ -2292,7 +2313,7 @@ def SIPP_PP(env, starts, goals, edges_conflicts_dict,nodes_edges_conflicts_dict,
                 ((node_pos2[0] - minimum_w) / minimum_interval, (node_pos2[1] - minimum_w) / minimum_interval))
             #print(cells_list1)
            # print(cells_list2)
-    return new_path_dict,new_agents_time_list
+    return path_dict,agents_time_list
 
 if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser(description="Start the experiment agent")

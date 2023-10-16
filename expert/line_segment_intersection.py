@@ -71,14 +71,6 @@ def compute_edgesToedges_conflicts(edges, points,check_edges_pairs,edges_collisi
         check_end_pos = points[check_current_node]
         minimum_dist = distance_between_segments(current_start_pos, current_end_pos, check_start_pos,
                                                  check_end_pos)
-        flag1 = False
-        flag2 = False
-        flag3 = False
-        flag4 = False
-        flag5 = False
-        flag6 = False
-        flag7 = False
-        flag8 = False
         if minimum_dist<=dst_threshold or (do_intersect(current_start_pos,current_end_pos,check_start_pos,check_end_pos)==True):
             # case 1
             V2 = check_end_pos - check_start_pos
@@ -109,20 +101,20 @@ def compute_edgesToedges_conflicts(edges, points,check_edges_pairs,edges_collisi
                     collision_time_2 = (-B * delay_range[1] - D) / (2 * A)
                     min_time = min(collision_time_1, collision_time_2)
                     max_time = max(collision_time_1, collision_time_2)
-                    edges_collision_dict[(parent_node,current_node)].append([(check_parent_node,check_current_node),(min_time,max_time),delay_range,[A,B,D]])
+                    edges_collision_dict[(parent_node,current_node)].append([(check_parent_node,check_current_node),(min_time,max_time),delay_range,[A,B,C,D,E,F]])
             else:
                 if parent_node==check_parent_node or parent_node==check_current_node or current_node==check_parent_node or current_node==check_current_node:
                     if current_node==check_parent_node:
                         edges_collision_dict[(parent_node, current_node)].append(
-                            [(check_parent_node, check_current_node), (V1_len-2*R,V1_len+2*R), [V1_len-2*R,V1_len+2*R], [A, B, D]])
+                            [(check_parent_node, check_current_node), (V1_len-2*R,V1_len+2*R), [V1_len-2*R,V1_len+2*R], [A, B,C, D,E,F]])
                     elif current_node==check_current_node:
                         edges_collision_dict[(parent_node, current_node)].append(
                             [(check_parent_node, check_current_node), (- 2 * R, V1_len + 2 * R),
-                             [-V2_len - 2 * R, -V2_len+V1_len+2*R], [A, B, D]])
+                             [-V2_len - 2 * R, -V2_len+V1_len+2*R], [A, B,C, D,E,F]])
                     elif parent_node==check_parent_node:
                         edges_collision_dict[(parent_node, current_node)].append(
                             [(check_parent_node, check_current_node), (- 2 * R, V1_len + 2 * R),
-                             [-2 * R, 2 * R], [A, B, D]])
+                             [-2 * R, 2 * R], [A, B, C,D,E,F]])
                 else:
                     print(first_edge)
                     print(second_edge)
@@ -155,22 +147,22 @@ def compute_edgesToedges_conflicts(edges, points,check_edges_pairs,edges_collisi
                     min_time = min(collision_time_1, collision_time_2)
                     max_time = max(collision_time_1, collision_time_2)
                     edges_collision_dict[(parent_node, current_node)].append(
-                        [(check_current_node, check_parent_node), (min_time, max_time),delay_range,[A,B,D]])
+                        [(check_current_node, check_parent_node), (min_time, max_time),delay_range,[A,B,C,D,E,F]])
                     #print(min_time)
                     #print(max_time)
             else:
                 if parent_node==check_parent_node or parent_node==check_current_node or current_node==check_parent_node or current_node==check_current_node:
                     if current_node==check_current_node:
                         edges_collision_dict[(parent_node, current_node)].append(
-                            [(check_parent_node, check_current_node), (V1_len-2*R,V1_len+2*R), [V1_len-2*R,V1_len+2*R], [A, B, D]])
+                            [(check_parent_node, check_current_node), (V1_len-2*R,V1_len+2*R), [V1_len-2*R,V1_len+2*R], [A, B, C,D,E,F]])
                     elif current_node==check_parent_node:
                         edges_collision_dict[(parent_node, current_node)].append(
                             [(check_parent_node, check_current_node), (- 2 * R, V1_len + 2 * R),
-                             [-V2_len - 2 * R, -V2_len+V1_len+2*R], [A, B, D]])
+                             [-V2_len - 2 * R, -V2_len+V1_len+2*R], [A, B, C,D,E,F]])
                     elif parent_node==check_current_node:
                         edges_collision_dict[(parent_node, current_node)].append(
                             [(check_parent_node, check_current_node), (- 2 * R, V1_len + 2 * R),
-                             [-2 * R, 2 * R], [A, B, D]])
+                             [-2 * R, 2 * R], [A, B, C,D,E,F]])
             current_start_pos = points[current_node]
             current_end_pos = points[parent_node]
             V1 = (current_end_pos - current_start_pos) / np.linalg.norm((current_end_pos - current_start_pos))
@@ -206,22 +198,22 @@ def compute_edgesToedges_conflicts(edges, points,check_edges_pairs,edges_collisi
                     min_time = min(collision_time_1, collision_time_2)
                     max_time = max(collision_time_1, collision_time_2)
                     edges_collision_dict[(current_node, parent_node)].append(
-                        [(check_parent_node, check_current_node), (min_time, max_time),delay_range,[A,B,D]])
+                        [(check_parent_node, check_current_node), (min_time, max_time),delay_range,[A,B,C,D,E,F]])
                     #print(min_time)
                     #print(max_time)
             else:
                 if parent_node==check_parent_node or parent_node==check_current_node or current_node==check_parent_node or current_node==check_current_node:
                     if parent_node==check_parent_node:
                         edges_collision_dict[(parent_node, current_node)].append(
-                            [(check_parent_node, check_current_node), (V1_len-2*R,V1_len+2*R), [V1_len-2*R,V1_len+2*R], [A, B, D]])
+                            [(check_parent_node, check_current_node), (V1_len-2*R,V1_len+2*R), [V1_len-2*R,V1_len+2*R], [A, B, C,D,E,F]])
                     elif parent_node==check_current_node:
                         edges_collision_dict[(parent_node, current_node)].append(
                             [(check_parent_node, check_current_node), (- 2 * R, V1_len + 2 * R),
-                             [-V2_len - 2 * R, -V2_len+V1_len+2*R], [A, B, D]])
+                             [-V2_len - 2 * R, -V2_len+V1_len+2*R], [A, B, C,D,E,F]])
                     elif current_node==check_parent_node:
                         edges_collision_dict[(parent_node, current_node)].append(
                             [(check_parent_node, check_current_node), (- 2 * R, V1_len + 2 * R),
-                             [-2 * R, 2 * R], [A, B, D]])
+                             [-2 * R, 2 * R], [A, B, C,D,E,F]])
             # case 4
             V2 = check_start_pos - check_end_pos
             V2_len=np.linalg.norm(V2)
@@ -252,7 +244,7 @@ def compute_edgesToedges_conflicts(edges, points,check_edges_pairs,edges_collisi
                     max_time = max(collision_time_1, collision_time_2)
 
                     edges_collision_dict[(current_node, parent_node)].append(
-                        [(check_current_node, check_parent_node), (min_time, max_time),delay_range,[A,B,D]])
+                        [(check_current_node, check_parent_node), (min_time, max_time),delay_range,[A,B,C,D,E,F]])
 
 
                     #print(min_time)
@@ -261,15 +253,15 @@ def compute_edgesToedges_conflicts(edges, points,check_edges_pairs,edges_collisi
                 if parent_node==check_parent_node or parent_node==check_current_node or current_node==check_parent_node or current_node==check_current_node:
                     if parent_node==check_current_node:
                         edges_collision_dict[(parent_node, current_node)].append(
-                            [(check_parent_node, check_current_node), (V1_len-2*R,V1_len+2*R), [V1_len-2*R,V1_len+2*R], [A, B, D]])
+                            [(check_parent_node, check_current_node), (V1_len-2*R,V1_len+2*R), [V1_len-2*R,V1_len+2*R], [A, B, C,D,E,F]])
                     elif parent_node==check_parent_node:
                         edges_collision_dict[(parent_node, current_node)].append(
                             [(check_parent_node, check_current_node), (- 2 * R, V1_len + 2 * R),
-                             [-V2_len - 2 * R, -V2_len+V1_len+2*R], [A, B, D]])
+                             [-V2_len - 2 * R, -V2_len+V1_len+2*R], [A, B, C,D,E,F]])
                     elif current_node==check_current_node:
                         edges_collision_dict[(parent_node, current_node)].append(
                             [(check_parent_node, check_current_node), (- 2 * R, V1_len + 2 * R),
-                             [-2 * R, 2 * R], [A, B, D]])
+                             [-2 * R, 2 * R], [A, B, C,D,E,F]])
         first_edge=edges[pair[1]]
         second_edge=edges[pair[0]]
         parent_node = first_edge[0]
@@ -314,21 +306,21 @@ def compute_edgesToedges_conflicts(edges, points,check_edges_pairs,edges_collisi
                     min_time = min(collision_time_1, collision_time_2)
                     max_time = max(collision_time_1, collision_time_2)
                     edges_collision_dict[(parent_node, current_node)].append(
-                        [(check_parent_node, check_current_node), (min_time, max_time),delay_range,[A,B,D]])
+                        [(check_parent_node, check_current_node), (min_time, max_time),delay_range,[A,B,C,D,E,F]])
             else:
                 if parent_node == check_parent_node or parent_node == check_current_node or current_node == check_parent_node or current_node == check_current_node:
                     if current_node == check_parent_node:
                         edges_collision_dict[(parent_node, current_node)].append(
                             [(check_parent_node, check_current_node), (V1_len - 2 * R, V1_len + 2 * R),
-                             [V1_len - 2 * R, V1_len + 2 * R], [A, B, D]])
+                             [V1_len - 2 * R, V1_len + 2 * R], [A, B,C, D,E,F]])
                     elif current_node == check_current_node:
                         edges_collision_dict[(parent_node, current_node)].append(
                             [(check_parent_node, check_current_node), (- 2 * R, V1_len + 2 * R),
-                             [-V2_len - 2 * R, -V2_len + V1_len + 2 * R], [A, B, D]])
+                             [-V2_len - 2 * R, -V2_len + V1_len + 2 * R], [A, B, C,D,E,F]])
                     elif parent_node == check_parent_node:
                         edges_collision_dict[(parent_node, current_node)].append(
                             [(check_parent_node, check_current_node), (- 2 * R, V1_len + 2 * R),
-                             [-2 * R, 2 * R], [A, B, D]])
+                             [-2 * R, 2 * R], [A, B, C,D,E,F]])
             # case 2
             V2 = check_start_pos - check_end_pos
             V2_len = np.linalg.norm(V2)
@@ -358,22 +350,22 @@ def compute_edgesToedges_conflicts(edges, points,check_edges_pairs,edges_collisi
                     min_time = min(collision_time_1, collision_time_2)
                     max_time = max(collision_time_1, collision_time_2)
                     edges_collision_dict[(parent_node, current_node)].append(
-                        [(check_current_node, check_parent_node), (min_time, max_time),delay_range,[A,B,D]])
+                        [(check_current_node, check_parent_node), (min_time, max_time),delay_range,[A,B,C,D,E,F]])
                     # print(min_time)
                     # print(max_time)
             else:
                 if parent_node==check_parent_node or parent_node==check_current_node or current_node==check_parent_node or current_node==check_current_node:
                     if current_node==check_current_node:
                         edges_collision_dict[(parent_node, current_node)].append(
-                            [(check_parent_node, check_current_node), (V1_len-2*R,V1_len+2*R), [V1_len-2*R,V1_len+2*R], [A, B, D]])
+                            [(check_parent_node, check_current_node), (V1_len-2*R,V1_len+2*R), [V1_len-2*R,V1_len+2*R], [A, B, C,D,E,F]])
                     elif current_node==check_parent_node:
                         edges_collision_dict[(parent_node, current_node)].append(
                             [(check_parent_node, check_current_node), (- 2 * R, V1_len + 2 * R),
-                             [-V2_len - 2 * R, -V2_len+V1_len+2*R], [A, B, D]])
+                             [-V2_len - 2 * R, -V2_len+V1_len+2*R], [A, B, C,D,E,F]])
                     elif parent_node==check_current_node:
                         edges_collision_dict[(parent_node, current_node)].append(
                             [(check_parent_node, check_current_node), (- 2 * R, V1_len + 2 * R),
-                             [-2 * R, 2 * R], [A, B, D]])
+                             [-2 * R, 2 * R], [A, B, C,D,E,F]])
             current_start_pos = points[current_node]
             current_end_pos = points[parent_node]
             V1 = (current_end_pos - current_start_pos) / np.linalg.norm((current_end_pos - current_start_pos))
@@ -407,22 +399,22 @@ def compute_edgesToedges_conflicts(edges, points,check_edges_pairs,edges_collisi
                     min_time = min(collision_time_1, collision_time_2)
                     max_time = max(collision_time_1, collision_time_2)
                     edges_collision_dict[(current_node, parent_node)].append(
-                        [(check_parent_node, check_current_node), (min_time, max_time),delay_range,[A,B,D]])
+                        [(check_parent_node, check_current_node), (min_time, max_time),delay_range,[A,B,C,D,E,F]])
                     # print(min_time)
                     # print(max_time)
             else:
                 if parent_node==check_parent_node or parent_node==check_current_node or current_node==check_parent_node or current_node==check_current_node:
                     if parent_node==check_parent_node:
                         edges_collision_dict[(parent_node, current_node)].append(
-                            [(check_parent_node, check_current_node), (V1_len-2*R,V1_len+2*R), [V1_len-2*R,V1_len+2*R], [A, B, D]])
+                            [(check_parent_node, check_current_node), (V1_len-2*R,V1_len+2*R), [V1_len-2*R,V1_len+2*R], [A, B, C,D,E,F]])
                     elif parent_node==check_current_node:
                         edges_collision_dict[(parent_node, current_node)].append(
                             [(check_parent_node, check_current_node), (- 2 * R, V1_len + 2 * R),
-                             [-V2_len - 2 * R, -V2_len+V1_len+2*R], [A, B, D]])
+                             [-V2_len - 2 * R, -V2_len+V1_len+2*R], [A, B, C,D,E,F]])
                     elif current_node==check_parent_node:
                         edges_collision_dict[(parent_node, current_node)].append(
                             [(check_parent_node, check_current_node), (- 2 * R, V1_len + 2 * R),
-                             [-2 * R, 2 * R], [A, B, D]])
+                             [-2 * R, 2 * R], [A, B, C,D,E,F]])
             # case 4
             V1 = (current_end_pos - current_start_pos) / np.linalg.norm((current_end_pos - current_start_pos))
             V2 = check_start_pos - check_end_pos
@@ -458,22 +450,22 @@ def compute_edgesToedges_conflicts(edges, points,check_edges_pairs,edges_collisi
                         #check_rel_pos = check_rel_pos / np.linalg.norm(check_rel_pos)
                         #score = np.dot(current_rel_pos, check_rel_pos)
                     edges_collision_dict[(current_node, parent_node)].append(
-                        [(check_current_node, check_parent_node), (min_time, max_time),delay_range,[A,B,D]])
+                        [(check_current_node, check_parent_node), (min_time, max_time),delay_range,[A,B,C,D,E,F]])
                     # print(min_time)
                     # print(max_time)
             else:
                 if parent_node==check_parent_node or parent_node==check_current_node or current_node==check_parent_node or current_node==check_current_node:
                     if parent_node==check_current_node:
                         edges_collision_dict[(parent_node, current_node)].append(
-                            [(check_parent_node, check_current_node), (V1_len-2*R,V1_len+2*R), [V1_len-2*R,V1_len+2*R], [A, B, D]])
+                            [(check_parent_node, check_current_node), (V1_len-2*R,V1_len+2*R), [V1_len-2*R,V1_len+2*R], [A, B, C,D,E,F]])
                     elif parent_node==check_parent_node:
                         edges_collision_dict[(parent_node, current_node)].append(
                             [(check_parent_node, check_current_node), (- 2 * R, V1_len + 2 * R),
-                             [-V2_len - 2 * R, -V2_len+V1_len+2*R], [A, B, D]])
+                             [-V2_len - 2 * R, -V2_len+V1_len+2*R], [A, B, C,D,E,F]])
                     elif current_node==check_current_node:
                         edges_collision_dict[(parent_node, current_node)].append(
                             [(check_parent_node, check_current_node), (- 2 * R, V1_len + 2 * R),
-                             [-2 * R, 2 * R], [A, B, D]])
+                             [-2 * R, 2 * R], [A, B, C,D,E,F]])
     return edges_collision_dict
 
 def select_edges_zero_level(points,edge_end, edge_start, neighbors,edge_index_dict):
@@ -527,6 +519,7 @@ def precompute_conflicts(env):
     edges_pos_dict={}
     edges_data=[]
     edge_count = 0
+    check_edges_dict={}
     edges_collision_dict={}
     nodes_edges_conflicts_dict={}
     for i in range(node_num):
@@ -565,9 +558,9 @@ def precompute_conflicts(env):
     #for i in range(len(intersection)):
         #current_intersection=intersection[i]
         #check_edges_pair.append((edges_pos_dict[current_intersection[1][0]],edges_pos_dict[current_intersection[1][1]]))
-    check_edges_pair_copy=copy.deepcopy(check_edges_pair)
     select_edges_pair_part1,nodes_edges_pairs,edges_to_edges_dict=fixed_radius_near_neighborhoods_edges(env)
     start_time=time.time()
+    print(len(nodes_edges_pairs))
     for pair in nodes_edges_pairs:
         node=pair[0]
         edge_num=pair[1]
@@ -583,8 +576,10 @@ def precompute_conflicts(env):
             edges_nodes_conflicts_dict[(edge[0],edge[1])].append((node,found_points))
             edges_nodes_conflicts_dict[(edge[1], edge[0])].append((node, found_points))
     for i in range(len(select_edges_pair_part1)):
-        if select_edges_pair_part1[i] not in check_edges_pair_copy and (select_edges_pair_part1[i][1],select_edges_pair_part1[i][0]) not in check_edges_pair_copy:
+        if select_edges_pair_part1[i] not in check_edges_dict and (select_edges_pair_part1[i][1],select_edges_pair_part1[i][0]) not in check_edges_dict:
             check_edges_pair.append(select_edges_pair_part1[i])
+            check_edges_dict[select_edges_pair_part1[i]]=True
+            check_edges_dict[(select_edges_pair_part1[i][1],select_edges_pair_part1[i][0])]=True
     end_time=time.time()
     print("phase 6")
     print(end_time-start_time)
@@ -596,8 +591,10 @@ def precompute_conflicts(env):
         edges_set=select_edges_zero_level(points,edge_start,edge_end,neighbors,edge_index_dict)
         edges_set.remove(i)
         for j in range(len(edges_set)):
-            if (edges_set[j],i) not in check_edges_list_part2 and (edges_set[j],i) not in edges_to_edges_dict and (i,edges_set[j]) not in edges_to_edges_dict:
+            if (edges_set[j],i) not in check_edges_dict and (i,edges_set[j]) not in check_edges_dict:
                 check_edges_list_part2.append((i,edges_set[j]))
+                check_edges_dict[(edges_set[j],i)]=True
+                check_edges_dict[(i,edges_set[j])]=True
     for i in range(len(check_edges_list_part2)):
         check_edges_pair.append(check_edges_list_part2[i])
     end_time = time.time()
@@ -614,6 +611,7 @@ def precompute_conflicts(env):
         #print(points[edges[edge2][0]])
         #print(points[edges[edge2][1]])
     start_time = time.time()
+    print(len(check_edges_pair))
     edges_conflicts_dict=compute_edgesToedges_conflicts(edges,points,check_edges_pair,edges_collision_dict)
     end_time = time.time()
     print("phase 8")

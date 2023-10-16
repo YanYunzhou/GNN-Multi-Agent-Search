@@ -245,6 +245,7 @@ def fixed_radius_near_neighborhoods_edges(env):
     print(end_time - start_time)
     start_time = time.time()
     select_edges_pairs=[]
+    nodes_edges_dict={}
     nodes_edges_pairs=[]
     for i in range(len(points)):
         node_pos = points[i]
@@ -255,7 +256,9 @@ def fixed_radius_near_neighborhoods_edges(env):
         neighborhood_cellindex_list = get_neighborhood_cellindex(node_x_index, node_y_index, cell_width_num,
                                                                       cells_list_nodes)
         for edge in neighborhood_cellindex_list:
-            nodes_edges_pairs.append((i,edge))
+            if (i,edge) not in nodes_edges_dict:
+                nodes_edges_pairs.append((i,edge))
+                nodes_edges_dict[(i,edge)]=True
     print("phase3")
     end_time = time.time()
     print(end_time - start_time)
@@ -315,7 +318,7 @@ def fixed_radius_near_neighborhoods_edges(env):
                     #print(points[endpoint_1])
                     #print(points[endpoint_2])
                     count=count+1
-    print(count)
+    #print(count)
     print("phase5")
     end_time = time.time()
     print(end_time - start_time)
