@@ -419,9 +419,9 @@ def update_nodes_intervals_from_edges(points, current_node, parent_node, current
             time2=t2*(next_time-current_time)+current_time
             insert_current_time = min(time1, time2)
             insert_next_time = max(time1, time2)
-            if insert_next_time-insert_current_time>R:
-                insert_current_time=insert_current_time+0.01
-                insert_next_time=insert_next_time-0.01
+            #if insert_next_time-insert_current_time>R:
+                #insert_current_time=insert_current_time+0.01
+                #insert_next_time=insert_next_time-0.01
             i=node_num
             interval_num = len(node_interval[i])
             index = i
@@ -445,23 +445,36 @@ def update_nodes_intervals_from_edges(points, current_node, parent_node, current
                     break
             if first_index % 2 == 1 and second_index == first_index + 1:
                 node_interval[i][first_index][1] = insert_next_time + eps
+                node_interval[i][first_index][2]=1
                 node_interval[i][first_index + 1][0] = insert_next_time + eps
             elif first_index % 2 == 0 and second_index == first_index:
                 original_time = node_interval[i][first_index][1]
+                original_second_index= node_interval[i][first_index][2]
                 node_interval[i][first_index][1] = insert_current_time - eps
-                node_interval[i].insert(first_index + 1, [insert_current_time - eps, insert_next_time + eps])
-                node_interval[i].insert(first_index + 2, [insert_next_time + eps, original_time])
+                node_interval[i][first_index][2] = 1
+                node_interval[i].insert(first_index + 1, [insert_current_time - eps, insert_next_time + eps,1,1])
+                node_interval[i][first_index+1][2]=1
+                node_interval[i][first_index + 1][3] = 1
+                node_interval[i].insert(first_index + 2, [insert_next_time + eps, original_time,original_second_index,1])
+                node_interval[i][first_index + 2][3] = 1
 
             elif first_index % 2 == 0 and second_index == first_index + 2:
                 node_interval[i][first_index][1] = insert_current_time - eps
+                node_interval[i][first_index][2]=1
                 node_interval[i][first_index + 1][0] = insert_current_time - eps
+                node_interval[i][first_index + 1][3]=1
                 node_interval[i][first_index + 1][1] = insert_next_time + eps
+                node_interval[i][first_index + 1][2] = 1
                 node_interval[i][first_index + 2][0] = insert_next_time + eps
+                node_interval[i][first_index + 2][3] = 1
             elif first_index % 2 == 0 and second_index == first_index + 1:
                 node_interval[i][first_index][1] = insert_current_time
                 node_interval[i][second_index][0] = insert_current_time
+                node_interval[i][first_index][2]=1
+                node_interval[i][second_index][3]=1
             elif first_index % 2 == 1 and second_index == first_index + 2:
                 node_interval[i][first_index][1] = node_interval[i][second_index][1]
+                node_interval[i][first_index][2]=node_interval[i][second_index][2]
                 node_interval[i].pop(first_index + 1)
                 node_interval[i].pop(first_index + 1)
             elif first_index % 2 == 1 and first_index == second_index:
@@ -469,29 +482,48 @@ def update_nodes_intervals_from_edges(points, current_node, parent_node, current
             elif first_index % 2 == 0 and second_index == first_index + 3:
                 node_interval[i][first_index][1] = insert_current_time
                 node_interval[i][first_index + 1][0] = insert_current_time
+                node_interval[i][first_index][2] = 1
+                node_interval[i][first_index+1][3] = 1
                 node_interval[i][first_index + 1][1] = node_interval[i][second_index][1]
+                node_interval[i][first_index + 1][2]= node_interval[i][second_index][2]
                 node_interval[i].pop(first_index + 2)
                 node_interval[i].pop(first_index + 2)
             elif first_index % 2 == 1 and second_index == first_index + 3:
                 node_interval[i][first_index][1] = insert_next_time
+                node_interval[i][first_index][2] = 1
                 node_interval[i][second_index][0] = insert_next_time
+                node_interval[i][second_index][3]=1
                 node_interval[i].pop(first_index + 1)
                 node_interval[i].pop(first_index + 1)
             elif first_index % 2 == 0 and second_index == first_index + 4:
                 node_interval[i][first_index][1] = insert_current_time
                 node_interval[i][first_index + 1][0] = insert_current_time
+                node_interval[i][first_index][2] = 1
+                node_interval[i][first_index+1][3] = 1
                 node_interval[i][first_index + 1][1] = insert_next_time
+                node_interval[i][first_index + 1][2] = 1
                 node_interval[i][second_index][0] = insert_next_time
+                node_interval[i][second_index][3]=1
                 node_interval[i].pop(first_index + 2)
                 node_interval[i].pop(first_index + 2)
             elif first_index%2==0 and second_index==first_index+5:
                 node_interval[i][first_index][1] = insert_current_time
                 node_interval[i][first_index+1][0] = insert_current_time
+                node_interval[i][first_index][2] = 1
+                node_interval[i][first_index + 1][3] = 1
                 node_interval[i][first_index+1][1]=node_interval[i][second_index][1]
+                node_interval[i][first_index + 1][2] = node_interval[i][second_index][2]
                 node_interval[i].pop(first_index + 2)
                 node_interval[i].pop(first_index + 2)
                 node_interval[i].pop(first_index + 2)
                 node_interval[i].pop(first_index + 2)
+            elif first_index % 2 == 1 and second_index == first_index + 4:
+                node_interval[i][first_index][1]=node_interval[i][second_index][1]
+                node_interval[i][first_index][2]=node_interval[i][second_index][2]
+                node_interval[i].pop(first_index + 1)
+                node_interval[i].pop(first_index + 1)
+                node_interval[i].pop(first_index + 1)
+                node_interval[i].pop(first_index + 1)
             else:
                 print(first_index)
                 print(second_index)
@@ -995,10 +1027,9 @@ def insert_collision_interval(collision_interval, interval):
     return collision_interval
 
 
-def search_collision_interval(collision_interval, time,end_time,edge_time):
+def search_collision_interval(collision_interval, time,end_time,edge_time,eps):
     edge_intervals_lists=[]
     interval_num = np.shape(collision_interval)[0]
-    eps=0.0205
     end_time=end_time-eps
     if end_time<time:
         return edge_intervals_lists
@@ -1105,7 +1136,7 @@ def SIPP_PP(env, starts, goals, edges_conflicts_dict,nodes_edges_conflicts_dict,
     closed_set = list()
     initial_safe_interval = []
     infeasible_agents_list=[]
-    initial_safe_interval.append([-np.inf, np.inf])
+    initial_safe_interval.append([-np.inf, np.inf,-1,-1])
     agent_num = env.num_agents
     graph = env.graphs
     points = graph['points']
@@ -1156,31 +1187,42 @@ def SIPP_PP(env, starts, goals, edges_conflicts_dict,nodes_edges_conflicts_dict,
             break
         neighbor_num = len(neighbors[best_node.state])
         successors = list()
+        if best_node.safe_interval[2]==-1:
+            current_eps=eps
+        else:
+            current_eps=0
         # print(neighbor_num)
         for i in range(neighbor_num):
             neighbor_state = neighbors[best_node.state][i]
             if neighbor_state != best_node.state:
                 m_time = edge_cost[best_node.state][i]
                 start_t = best_node.time + m_time
-                end_t = best_node.safe_interval[1] + m_time-bigger_eps
+                end_t = best_node.safe_interval[1] + m_time-current_eps
                 heur = backplanner.distance(agent_id, neighbor_state, current_end)
                 heur = heur * penalty_param
                 interval_num = int((len(nodes_safe_intervals[neighbor_state]) + 1) / 2)
                 for j in range(interval_num):
-                    current_eps = eps
-                    if nodes_safe_intervals[neighbor_state][2 * j][0] >= end_t - current_eps:
+                    if nodes_safe_intervals[neighbor_state][2 * j][2] == -1:
+                        first_eps = eps
+                    else:
+                        first_eps = 0
+                    if nodes_safe_intervals[neighbor_state][2 * j][3] == -1:
+                        second_eps = eps
+                    else:
+                        second_eps = 0
+                    if nodes_safe_intervals[neighbor_state][2 * j][0] >= end_t - second_eps:
                         break
                     if nodes_safe_intervals[neighbor_state][2 * j][0] == np.inf:
                         continue
-                    if nodes_safe_intervals[neighbor_state][2 * j][0]+eps >= end_t or \
+                    if nodes_safe_intervals[neighbor_state][2 * j][0]+second_eps >= end_t or \
                             nodes_safe_intervals[neighbor_state][2 * j][
-                                1] <= start_t + eps:
+                                1] <= start_t + first_eps:
                         continue
-                    if start_t <= nodes_safe_intervals[neighbor_state][2 * j][0] + eps:
-                        t = nodes_safe_intervals[neighbor_state][2 * j][0] + eps
+                    if start_t <= nodes_safe_intervals[neighbor_state][2 * j][0] + second_eps:
+                        t = nodes_safe_intervals[neighbor_state][2 * j][0] + second_eps
                     else:
                         t = start_t
-                    if t>=best_node.safe_interval[1] + m_time-bigger_eps:
+                    if t>=best_node.safe_interval[1] + m_time-current_eps:
                         continue
                     fScore = t + heur
                     New_Node = SIPP_Node(state=neighbor_state, time=t, fScore=fScore, gScore=t,
@@ -1237,9 +1279,9 @@ def SIPP_PP(env, starts, goals, edges_conflicts_dict,nodes_edges_conflicts_dict,
     path_time_list = np.append(path_time_list, best_node.time)
     insert_index = nodes_safe_intervals[best_node.state].index(best_node.safe_interval)
     nodes_safe_intervals[best_node.state].remove(best_node.safe_interval)
-    nodes_safe_intervals[best_node.state].insert(insert_index, [best_node.safe_interval[0], best_node.time])
-    nodes_safe_intervals[best_node.state].insert(insert_index + 1, [best_node.time, np.inf])
-    nodes_safe_intervals[best_node.state].insert(insert_index + 2, [np.inf, np.inf])
+    nodes_safe_intervals[best_node.state].insert(insert_index, [best_node.safe_interval[0], best_node.time,-1,-1])
+    nodes_safe_intervals[best_node.state].insert(insert_index + 1, [best_node.time, np.inf,-1,-1])
+    nodes_safe_intervals[best_node.state].insert(insert_index + 2, [np.inf, np.inf,-1,-1])
     #nodes_agent_record[best_node.state].append([high_priority_index,-1,best_node.time,np.inf])
     edge_dict = update_edge_intervals_from_points(points, best_node, best_node.time, np.inf, edge_dict,nodes_edges_conflicts_dict)
     # edge_dict = compute_minimum_distance(edges, points, best_node.state, best_node.state, best_node.time,
@@ -1253,7 +1295,7 @@ def SIPP_PP(env, starts, goals, edges_conflicts_dict,nodes_edges_conflicts_dict,
         stay_time = leave_time - best_node.parent.time
         nodes_safe_intervals[best_node.parent.state].remove(best_node.parent.safe_interval)
         nodes_safe_intervals[best_node.parent.state].insert(insert_index,
-                                                            [best_node.parent.safe_interval[0], best_node.parent.time])
+                                                            [best_node.parent.safe_interval[0], best_node.parent.time,-1,-1])
         index = neighbors[best_node.parent.state].index(best_node.state)
         leave_time = last_time - edge_cost[best_node.parent.state][index]
         if  type(edge_dict[(best_node.state, best_node.parent.state)])==type(False):
@@ -1287,8 +1329,8 @@ def SIPP_PP(env, starts, goals, edges_conflicts_dict,nodes_edges_conflicts_dict,
             # best_node.time + stay_time, edge_dict)
         current_time = best_node.time
         last_time = current_time
-        nodes_safe_intervals[best_node.state].insert(insert_index + 1, [best_node.time, leave_time])
-        nodes_safe_intervals[best_node.state].insert(insert_index + 2, [leave_time, best_node.safe_interval[1]])
+        nodes_safe_intervals[best_node.state].insert(insert_index + 1, [best_node.time, leave_time,-1,-1])
+        nodes_safe_intervals[best_node.state].insert(insert_index + 2, [leave_time, best_node.safe_interval[1],-1,-1])
     last_time = best_node_copy.time
     # print(nodes_safe_intervals)
     while best_node_copy.parent != None:
@@ -1355,6 +1397,14 @@ def SIPP_PP(env, starts, goals, edges_conflicts_dict,nodes_edges_conflicts_dict,
                 0] != np.inf:
                 find_flag=True
                 break
+            if best_node.safe_interval[2] == -1:
+                current_eps = eps
+            else:
+                current_eps = 0
+            if best_node.safe_interval[3] == -1:
+                second_current_eps = eps
+            else:
+                second_current_eps = 0
             neighbor_num = len(neighbors[best_node.state])
             successors = list()
             current_pos = points[best_node.state]
@@ -1366,7 +1416,8 @@ def SIPP_PP(env, starts, goals, edges_conflicts_dict,nodes_edges_conflicts_dict,
                     best_node_eps=eps
                     m_time = edge_cost[best_node.state][i]
                     start_t = best_node.time + m_time
-                    end_t = best_node.safe_interval[1] + m_time-bigger_eps
+                    end_t = best_node.safe_interval[1] + m_time-current_eps
+
                     if end_t<start_t:
                         continue
                     heur = backplanner.distance(agent_id, neighbor_state, current_end)
@@ -1377,7 +1428,7 @@ def SIPP_PP(env, starts, goals, edges_conflicts_dict,nodes_edges_conflicts_dict,
                         # collision_interval_num=np.shape(edge_dict[(best_node.state, neighbor_state)])[0]
                         edge_flag = True
                         edge_interval_lists = search_collision_interval(edge_dict[(best_node.state, neighbor_state)],
-                                                                  best_node.time,best_node.safe_interval[1],m_time)
+                                                                  best_node.time,best_node.safe_interval[1],m_time,current_eps)
                         # edge_interval[0] = edge_interval[0] + eps
                         # print(edge_dict[(best_node.state, neighbor_state)])
                         # print(edge_interval)
@@ -1393,24 +1444,30 @@ def SIPP_PP(env, starts, goals, edges_conflicts_dict,nodes_edges_conflicts_dict,
                         # print(edge_interval)
                         # break
                     for j in range(interval_num):
-
-                        current_eps = eps
-                        if nodes_safe_intervals[neighbor_state][2 * j][0] >= end_t - current_eps:
+                        if nodes_safe_intervals[neighbor_state][2 * j][2] == -1:
+                            first_eps = eps
+                        else:
+                            first_eps = 0
+                        if nodes_safe_intervals[neighbor_state][2 * j][3] == -1:
+                            second_eps = eps
+                        else:
+                            second_eps = 0
+                        if nodes_safe_intervals[neighbor_state][2 * j][0] >= end_t - second_eps:
                             break
                         if nodes_safe_intervals[neighbor_state][2 * j][0] == np.inf:
                             continue
                         if edge_flag == False:
 
-                            if nodes_safe_intervals[neighbor_state][2 * j][0] >= end_t -current_eps or \
+                            if nodes_safe_intervals[neighbor_state][2 * j][0] >= end_t -second_eps or \
                                     nodes_safe_intervals[neighbor_state][2 * j][
-                                        1] <= start_t +current_eps:
+                                        1] <= start_t +first_eps:
                                 continue
-                            if start_t < nodes_safe_intervals[neighbor_state][2 * j][0] + current_eps:
-                                t = nodes_safe_intervals[neighbor_state][2 * j][0] + current_eps
+                            if start_t < nodes_safe_intervals[neighbor_state][2 * j][0] + second_eps:
+                                t = nodes_safe_intervals[neighbor_state][2 * j][0] + second_eps
                             else:
                                 t = start_t
                             if t>nodes_safe_intervals[neighbor_state][2 * j][
-                                        1]-current_eps or t>best_node.safe_interval[1] + m_time-current_eps:
+                                        1]-first_eps or t>best_node.safe_interval[1] + m_time-current_eps:
                                 continue
                             fScore = t + heur
                             New_Node = SIPP_Node(state=neighbor_state, time=t, fScore=fScore, gScore=t,
@@ -1423,7 +1480,7 @@ def SIPP_PP(env, starts, goals, edges_conflicts_dict,nodes_edges_conflicts_dict,
                             for edge_interval in edge_interval_lists:
                                 if edge_interval[1] == -np.inf:
                                     continue
-                                if edge_interval[0] > best_node.safe_interval[1]-bigger_eps:
+                                if edge_interval[0] > best_node.safe_interval[1]-current_eps:
                                     continue
                                 if edge_interval[1] < best_node.time:
                                     continue
@@ -1440,16 +1497,16 @@ def SIPP_PP(env, starts, goals, edges_conflicts_dict,nodes_edges_conflicts_dict,
                                         continue
                                     # print([start_t,end_t])
                                     # print("newline")
-                                    if nodes_safe_intervals[neighbor_state][2 * j][0] >= end_t - current_eps or \
+                                    if nodes_safe_intervals[neighbor_state][2 * j][0] >= end_t - second_eps or \
                                             nodes_safe_intervals[neighbor_state][2 * j][
-                                                1] <= start_t + current_eps:
+                                                1] <= start_t +first_eps:
                                         continue
-                                    if start_t <= nodes_safe_intervals[neighbor_state][2 * j][0] + current_eps:
-                                        t = nodes_safe_intervals[neighbor_state][2 * j][0] + current_eps
+                                    if start_t <= nodes_safe_intervals[neighbor_state][2 * j][0] +second_eps:
+                                        t = nodes_safe_intervals[neighbor_state][2 * j][0] + second_eps
                                     else:
                                         t = start_t
                                     if t > nodes_safe_intervals[neighbor_state][2 * j][
-                                        1] - current_eps or t>best_node.safe_interval[1] + m_time-bigger_eps or t<best_node.safe_interval[0] + m_time+bigger_eps:
+                                        1] - first_eps or t>best_node.safe_interval[1] + m_time-current_eps or t<best_node.safe_interval[0] + m_time+second_current_eps:
                                         continue
 
                                     fScore = t + heur
@@ -1528,9 +1585,9 @@ def SIPP_PP(env, starts, goals, edges_conflicts_dict,nodes_edges_conflicts_dict,
             path_time_list = np.append(path_time_list, best_node.time)
             insert_index = nodes_safe_intervals[best_node.state].index(best_node.safe_interval)
             nodes_safe_intervals[best_node.state].remove(best_node.safe_interval)
-            nodes_safe_intervals[best_node.state].insert(insert_index, [best_node.safe_interval[0], best_node.time])
-            nodes_safe_intervals[best_node.state].insert(insert_index + 1, [best_node.time, np.inf])
-            nodes_safe_intervals[best_node.state].insert(insert_index + 2, [np.inf, np.inf])
+            nodes_safe_intervals[best_node.state].insert(insert_index, [best_node.safe_interval[0], best_node.time,-1,-1])
+            nodes_safe_intervals[best_node.state].insert(insert_index + 1, [best_node.time, np.inf,-1,-1])
+            nodes_safe_intervals[best_node.state].insert(insert_index + 2, [np.inf, np.inf,-1,-1])
 
             #insert_nodes_record(nodes_agent_record[best_node.state],priority_index[x],-1,best_node.time,np.inf)
             best_node_copy = copy.deepcopy(best_node)
@@ -1572,11 +1629,11 @@ def SIPP_PP(env, starts, goals, edges_conflicts_dict,nodes_edges_conflicts_dict,
                 if insert_mode==0:
                     nodes_safe_intervals[best_node.parent.state].insert(insert_index,
                                                                         [best_node.parent.safe_interval[0],
-                                                                         best_node.parent.time])
+                                                                         best_node.parent.time,-1,-1])
                 else:
                     nodes_safe_intervals[best_node.parent.state].insert(insert_index,
                                                                         [check_interval[0],
-                                                                         best_node.parent.time])
+                                                                         best_node.parent.time,-1,-1])
                 if  type(edge_dict[(best_node.state, best_node.parent.state)])==type(False):
                     edge_dict[(best_node.state, best_node.parent.state)] = np.array([[max(0,leave_time-travel_time-0.02), best_node.time+0.02]])
                 else:
@@ -1616,13 +1673,13 @@ def SIPP_PP(env, starts, goals, edges_conflicts_dict,nodes_edges_conflicts_dict,
                 current_time = best_node.time
                 last_time = current_time
                 if insert_mode==0:
-                    nodes_safe_intervals[best_node.state].insert(insert_index + 1, [best_node.time, leave_time])
+                    nodes_safe_intervals[best_node.state].insert(insert_index + 1, [best_node.time, leave_time,-1,-1])
                     nodes_safe_intervals[best_node.state].insert(insert_index + 2,
-                                                                 [leave_time, best_node.safe_interval[1]])
+                                                                 [leave_time, best_node.safe_interval[1],-1,-1])
                 else:
-                    nodes_safe_intervals[best_node.state].insert(insert_index + 1, [best_node.time, leave_time])
+                    nodes_safe_intervals[best_node.state].insert(insert_index + 1, [best_node.time, leave_time,-1,-1])
                     nodes_safe_intervals[best_node.state].insert(insert_index + 2,
-                                                                 [leave_time, check_interval[1]])
+                                                                 [leave_time, check_interval[1],-1,-1])
 
                 #for node in nodes_safe_intervals:
                     #interval = nodes_safe_intervals[node]
@@ -1678,6 +1735,9 @@ def SIPP_PP(env, starts, goals, edges_conflicts_dict,nodes_edges_conflicts_dict,
             open_set.append(Node_start)
             all_node_list = list()
             all_node_dict = {}
+            phase1_time = 0
+            phase2_time = 0
+            phase3_time = 0
             while len(open_set):
                 node_expand_num = node_expand_num + 1
                 if find_dst_flag == False:
@@ -1685,10 +1745,20 @@ def SIPP_PP(env, starts, goals, edges_conflicts_dict,nodes_edges_conflicts_dict,
                 else:
                     best_node = min(open_set,
                                     key=lambda SIPP_Node: (SIPP_Node.hScore, SIPP_Node.fScore, -SIPP_Node.gScore))
-                print(best_node.safe_interval)
                 if best_node.state == current_end and best_node.safe_interval[1] == np.inf and best_node.safe_interval[
                     0] != np.inf:
+                    find_flag = True
                     break
+                print(best_node.safe_interval)
+                #print(best_node.time)
+                if best_node.safe_interval[2] == -1:
+                    current_eps = eps
+                else:
+                    current_eps = 0
+                if best_node.safe_interval[3] == -1:
+                    second_current_eps = eps
+                else:
+                    second_current_eps = 0
                 neighbor_num = len(neighbors[best_node.state])
                 successors = list()
                 current_pos = points[best_node.state]
@@ -1700,7 +1770,9 @@ def SIPP_PP(env, starts, goals, edges_conflicts_dict,nodes_edges_conflicts_dict,
                         best_node_eps = eps
                         m_time = edge_cost[best_node.state][i]
                         start_t = best_node.time + m_time
-                        end_t = best_node.safe_interval[1] + m_time - bigger_eps
+                        end_t = best_node.safe_interval[1] + m_time - current_eps
+                        #print(start_t)
+                        #print(end_t)
                         if end_t < start_t:
                             continue
                         heur = backplanner.distance(agent_id, neighbor_state, current_end)
@@ -1712,7 +1784,7 @@ def SIPP_PP(env, starts, goals, edges_conflicts_dict,nodes_edges_conflicts_dict,
                             edge_flag = True
                             edge_interval_lists = search_collision_interval(
                                 edge_dict[(best_node.state, neighbor_state)],
-                                best_node.time, best_node.safe_interval[1], m_time)
+                                best_node.time, best_node.safe_interval[1], m_time,current_eps)
                             # edge_interval[0] = edge_interval[0] + eps
                             # print(edge_dict[(best_node.state, neighbor_state)])
                             # print(edge_interval)
@@ -1728,22 +1800,31 @@ def SIPP_PP(env, starts, goals, edges_conflicts_dict,nodes_edges_conflicts_dict,
                             # print(edge_interval)
                             # break
                         for j in range(interval_num):
-                            current_eps = eps
-                            if nodes_safe_intervals[neighbor_state][2 * j][0] >= end_t - current_eps:
+                            #print(nodes_safe_intervals[neighbor_state])
+                            if nodes_safe_intervals[neighbor_state][2 * j][2] == -1:
+                                first_eps = eps
+                            else:
+                                first_eps = 0
+                            if nodes_safe_intervals[neighbor_state][2 * j][3] == -1:
+                                second_eps = eps
+                            else:
+                                second_eps = 0
+                            if nodes_safe_intervals[neighbor_state][2 * j][0] >= end_t - second_eps:
                                 break
                             if nodes_safe_intervals[neighbor_state][2 * j][0] == np.inf:
                                 continue
                             if edge_flag == False:
-                                if nodes_safe_intervals[neighbor_state][2 * j][0] >= end_t - current_eps or \
+
+                                if nodes_safe_intervals[neighbor_state][2 * j][0] >= end_t - second_eps or \
                                         nodes_safe_intervals[neighbor_state][2 * j][
-                                            1] <= start_t + current_eps:
+                                            1] <= start_t + first_eps:
                                     continue
-                                if start_t < nodes_safe_intervals[neighbor_state][2 * j][0] + current_eps:
-                                    t = nodes_safe_intervals[neighbor_state][2 * j][0] + current_eps
+                                if start_t < nodes_safe_intervals[neighbor_state][2 * j][0] + second_eps:
+                                    t = nodes_safe_intervals[neighbor_state][2 * j][0] + second_eps
                                 else:
                                     t = start_t
                                 if t > nodes_safe_intervals[neighbor_state][2 * j][
-                                    1] - current_eps or t > best_node.safe_interval[1] + m_time - current_eps:
+                                    1] - first_eps or t > best_node.safe_interval[1] + m_time - current_eps:
                                     continue
                                 fScore = t + heur
                                 New_Node = SIPP_Node(state=neighbor_state, time=t, fScore=fScore, gScore=t,
@@ -1754,13 +1835,16 @@ def SIPP_PP(env, starts, goals, edges_conflicts_dict,nodes_edges_conflicts_dict,
                             else:
                                 edge_count = 0
                                 for edge_interval in edge_interval_lists:
+                                   # print(edge_interval)
                                     if edge_interval[1] == -np.inf:
                                         continue
-                                    if edge_interval[0] > best_node.safe_interval[1] - bigger_eps:
+                                    if edge_interval[0] > best_node.safe_interval[1] - current_eps:
                                         continue
                                     if edge_interval[1] < best_node.time:
                                         continue
-                                    elif edge_interval[1] - edge_interval[0] < 0.002:
+                                    elif edge_interval[0] == np.inf:
+                                        continue
+                                    elif edge_interval[1] - edge_interval[0] < 0.005:
                                         continue
                                     else:
                                         if start_t < edge_interval[0] + m_time:
@@ -1771,31 +1855,33 @@ def SIPP_PP(env, starts, goals, edges_conflicts_dict,nodes_edges_conflicts_dict,
                                             continue
                                         # print([start_t,end_t])
                                         # print("newline")
-                                        if nodes_safe_intervals[neighbor_state][2 * j][0] >= end_t - current_eps or \
+                                        if nodes_safe_intervals[neighbor_state][2 * j][0] >= end_t - second_eps or \
                                                 nodes_safe_intervals[neighbor_state][2 * j][
-                                                    1] <= start_t + current_eps:
+                                                    1] <= start_t + first_eps:
                                             continue
-                                        if start_t <= nodes_safe_intervals[neighbor_state][2 * j][0] + current_eps:
-                                            t = nodes_safe_intervals[neighbor_state][2 * j][0] + current_eps
+                                        if start_t <= nodes_safe_intervals[neighbor_state][2 * j][0] + second_eps:
+                                            t = nodes_safe_intervals[neighbor_state][2 * j][0] + second_eps
                                         else:
                                             t = start_t
                                         if t > nodes_safe_intervals[neighbor_state][2 * j][
-                                            1] - current_eps or t > best_node.safe_interval[
-                                            1] + m_time - bigger_eps or t < best_node.safe_interval[
-                                            0] + m_time + bigger_eps:
+                                            1] - first_eps or t > best_node.safe_interval[
+                                            1] + m_time - current_eps or t < best_node.safe_interval[0] + m_time + second_current_eps:
                                             continue
+
                                         fScore = t + heur
                                         # if t-m_time>best_node.time+eps:
                                         # print(start_t)
                                         # print(end_t)
                                         # print(best_node.time)
                                         # print([t-m_time,t])
+
                                         New_Node = SIPP_Node(state=neighbor_state, time=t, fScore=fScore, gScore=t,
                                                              safe_interval=nodes_safe_intervals[neighbor_state][2 * j],
                                                              interval_order=j, edge_order=edge_count)
 
                                         New_Node.parent = best_node
                                         successors.append(New_Node)
+
                                         edge_count = edge_count + 1
                 for i in range(len(successors)):
                     node_key = str(successors[i].state) + "_" + str(successors[i].interval_order) + "_" + str(
@@ -1844,10 +1930,6 @@ def SIPP_PP(env, starts, goals, edges_conflicts_dict,nodes_edges_conflicts_dict,
                 closed_dict[node_key] = len(closed_set)
                 closed_set.append(best_node)
                 open_set.remove(best_node)
-            print(node_expand_num)
-
-        #print(node_expand_num)
-        #print(iteration_end - iteration_start)
     path_keys = list(path_dict)
     collision_count = 0
     # for node in nodes_safe_intervals:
